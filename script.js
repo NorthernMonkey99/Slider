@@ -76,5 +76,5 @@ function checkWin() {
     return tiles.map(tile => tile.textContent).join() === correctOrder.join();
 }
 
-const imageUrl = "YOUR_IMAGE_URL_HERE"; // Replace with an image link
+const imageUrl = "images/cyber-warrior.png"; // Replace with an image link
 createPuzzle(imageUrl);
