@@ -2,9 +2,8 @@ const puzzle = document.getElementById("puzzle");
 let tiles = [];
 
 function createPuzzle() {
-    let numbers = [...Array(8).keys()].map(n => n + 1);
-    numbers.push(""); // Empty tile
-    shuffle(numbers);
+    // Predefined solvable state requiring no more than 10 moves
+    const numbers = [1, 2, 3, 4, 5, 6, 7, "", 8];
 
     tiles = numbers.map((num, index) => {
         const tile = document.createElement("div");
@@ -40,11 +39,5 @@ function moveTile(index) {
     }
 }
 
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
+// Initial puzzle state avoids random shuffling for controlled solvability
 createPuzzle();
