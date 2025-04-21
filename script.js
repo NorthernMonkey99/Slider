@@ -1,20 +1,26 @@
 const puzzle = document.getElementById("puzzle");
 let tiles = [];
 
-function createPuzzle() {
+function createPuzzle(imageUrl) {
     const numbers = [...Array(8).keys()].map(n => n + 1);
-    numbers.push(""); // Empty tile (last position in the solved state)
+    numbers.push(""); // Empty tile (last position)
+    shuffle(numbers);
+
     tiles = numbers.map((num, index) => {
         const tile = document.createElement("div");
         tile.classList.add("tile");
-        if (num === "") tile.classList.add("empty");
-        tile.textContent = num;
+        if (num === "") {
+            tile.classList.add("empty");
+        } else {
+            const row = Math.floor((num - 1) / 3);
+            const col = (num - 1) % 3;
+            tile.style.backgroundImage = `url(${imageUrl})`;
+            tile.style.backgroundPosition = `-${col * 100}px -${row * 100}px`;
+        }
         tile.addEventListener("click", () => moveTile(index));
         return tile;
     });
 
-    // Randomize the puzzle with up to 10 moves
-    shufflePuzzle(10);
     renderPuzzle();
 }
 
@@ -24,7 +30,7 @@ function renderPuzzle() {
 }
 
 function moveTile(index) {
-    const emptyIndex = tiles.findIndex(tile => tile.textContent === "");
+    const emptyIndex = tiles.findIndex(tile => tile.classList.contains("empty"));
     const validMoves = [
         emptyIndex - 3, emptyIndex + 3, // Up/Down
         emptyIndex - 1 * (emptyIndex % 3 !== 0), // Left
@@ -32,29 +38,18 @@ function moveTile(index) {
     ];
 
     if (validMoves.includes(index)) {
-        [tiles[emptyIndex].textContent, tiles[index].textContent] =
-            [tiles[index].textContent, tiles[emptyIndex].textContent];
-        tiles[emptyIndex].classList.toggle("empty");
-        tiles[index].classList.toggle("empty");
+        [tiles[emptyIndex], tiles[index]] =
+            [tiles[index], tiles[emptyIndex]];
         renderPuzzle();
     }
 }
 
-function shufflePuzzle(moves) {
-    for (let i = 0; i < moves; i++) {
-        const emptyIndex = tiles.findIndex(tile => tile.textContent === "");
-        const validMoves = [
-            emptyIndex - 3, emptyIndex + 3, // Up/Down
-            emptyIndex - 1 * (emptyIndex % 3 !== 0), // Left
-            emptyIndex + 1 * ((emptyIndex + 1) % 3 !== 0) // Right
-        ].filter(index => index >= 0 && index < tiles.length);
-
-        const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
-        [tiles[emptyIndex].textContent, tiles[randomMove].textContent] =
-            [tiles[randomMove].textContent, tiles[emptyIndex].textContent];
-        tiles[emptyIndex].classList.toggle("empty");
-        tiles[randomMove].classList.toggle("empty");
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
 }
 
-createPuzzle();
+const imageUrl = "images/cyber-warrior.png"; // Replace with an image link
+createPuzzle(imageUrl);
